@@ -62,7 +62,7 @@ battery_get_bat_temperature(void)
 	int i;
 
 	for (i = 0; i < 5; i++)
-		pr_notice("[Thermal] E_WF: %s doesn't exist\n", __func__);
+		pr_err("[Thermal] E_WF: %s doesn't exist\n", __func__);
 
 	tsbattery_exit();
 	return -127000;
@@ -209,6 +209,7 @@ static int get_hw_battery_temp(void)
 
 #if (CONFIG_MTK_GAUGE_VERSION == 30)
 	ret = battery_get_bat_temperature();
+
 #else
 	/* MTK_GAUGE_VERSION = 10 or 20 */
 	ret = read_tbat_value();
