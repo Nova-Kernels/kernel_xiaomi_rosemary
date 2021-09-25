@@ -443,7 +443,7 @@ done:
 		pdata2->input_current_limit = pdata2->input_current_limit / 2;
 	}
 
-	pr_notice("force:%d %d thermal:(%d %d,%d %d)(%d %d %d)setting:(%d %d)(%d %d)",
+	pr_debug("force:%d %d thermal:(%d %d,%d %d)(%d %d %d)setting:(%d %d)(%d %d)",
 		_uA_to_mA(pdata->force_charging_current),
 		_uA_to_mA(pdata2->force_charging_current),
 		_uA_to_mA(pdata->thermal_input_current_limit),
@@ -458,7 +458,7 @@ done:
 		_uA_to_mA(pdata2->input_current_limit),
 		_uA_to_mA(pdata2->charging_current_limit));
 
-	pr_notice("type:%d usb_unlimited:%d usbif:%d usbsm:%d aicl:%d atm:%d parallel:%d\n",
+	pr_debug("type:%d usb_unlimited:%d usbif:%d usbsm:%d aicl:%d atm:%d parallel:%d\n",
 		info->chr_type, info->usb_unlimited,
 		IS_ENABLED(CONFIG_USBIF_COMPLIANCE), info->usb_state,
 		_uA_to_mA(pdata->input_current_limit_by_aicl),
@@ -559,12 +559,12 @@ static void dual_swchg_turn_on_charging(struct charger_manager *info)
 	if (swchgalg->state == CHR_ERROR) {
 		chg1_enable = false;
 		chg2_enable = false;
-		pr_notice("Charging Error, disable charging!\n");
+		pr_err("Charging Error, disable charging!\n");
 	} else if ((get_boot_mode() == META_BOOT) ||
 		   (get_boot_mode() == ADVMETA_BOOT)) {
 		chg1_enable = false;
 		chg2_enable = false;
-		pr_notice("In meta mode, disable charging\n");
+		pr_debug("In meta mode, disable charging\n");
 	} else {
 		mtk_pe20_start_algorithm(info);
 		if (mtk_pe20_get_is_connect(info) == false)
@@ -575,7 +575,7 @@ static void dual_swchg_turn_on_charging(struct charger_manager *info)
 		    || info->chg1_data.charging_current_limit == 0) {
 			chg1_enable = false;
 			chg2_enable = false;
-			pr_notice("chg1's aicr is set to 0mA, turn off\n");
+			pr_debug("chg1's aicr is set to 0mA, turn off\n");
 		}
 
 		if ((mtk_pe20_get_is_enable(info) &&
@@ -588,7 +588,7 @@ static void dual_swchg_turn_on_charging(struct charger_manager *info)
 			if (info->chg2_data.input_current_limit == 0 ||
 			    info->chg2_data.charging_current_limit == 0) {
 				chg2_enable = false;
-				pr_notice("chg2's aicr is 0mA, turn off\n");
+				pr_debug("chg2's aicr is 0mA, turn off\n");
 			}
 		}
 		if (chg1_enable)
@@ -750,7 +750,7 @@ static int mtk_dual_switch_chr_cc(struct charger_manager *info)
 	/* check bif */
 	if (IS_ENABLED(CONFIG_MTK_BIF_SUPPORT)) {
 		if (pmic_is_bif_exist() != 1) {
-			pr_notice("No BIF battery, stop charging\n");
+			pr_debug("No BIF battery, stop charging\n");
 			swchgalg->state = CHR_ERROR;
 			charger_manager_notifier(info, CHARGER_NOTIFY_ERROR);
 		}
