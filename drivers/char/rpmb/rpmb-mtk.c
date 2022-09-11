@@ -2899,7 +2899,8 @@ long rpmb_ioctl_ufs(struct file *file, unsigned int cmd, unsigned long arg)
 		} else
 			err = RPMB_ALLOC_ERROR;
 
-			break;
+		break;
+		
 	case RPMB_IOCTL_SOTER_SET_KEY:
 			MSG(DBG_INFO, "%s, cmd = RPMB_IOCTL_SOTER_WRITE_DATA\n",
 					__func__);
