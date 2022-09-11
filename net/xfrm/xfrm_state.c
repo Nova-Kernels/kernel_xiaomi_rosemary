@@ -924,57 +924,6 @@ static void __printf_back_trace(struct xfrm_state_trace *trace, char *tag)
 #endif
 }
 
-static void xfrm_state_print_back_trace(struct xfrm_state *x)
-{
-	char *logtag = "alloc";
-
-	__printf_back_trace(&x->xfrm_alloc_trace, logtag);
-	logtag = "free";
-	__printf_back_trace(&x->xfrm_free_trace, logtag);
-	logtag = "transfer";
-	__printf_back_trace(&x->xfrm_transfer_trace, logtag);
-	logtag = "find";
-	__printf_back_trace(&x->xfrm_find_trace, logtag);
-	logtag = "insert";
-	__printf_back_trace(&x->xfrm_insert_trace, logtag);
-}
-
-static void xfrm_state_print_refcount_back_trace(struct xfrm_state *x)
-{
-#ifdef CONFIG_MTK_ENG_BUILD
-	int i, idx, size;
-	unsigned int tmp, pid;
-	struct xfrm_state_trace *trace;
-
-	if (!x->xfrm_refcount_trace_idx && !x->xfrm_refcount_trace_overwrite) {
-		pr_info("[xfrm_state]  %s no backtrace\n", __func__);
-		return;
-	}
-
-	if (!x->xfrm_refcount_trace_overwrite)
-		size = x->xfrm_refcount_trace_idx;
-	else
-		size = MAX_TRACE_LEN;
-
-	pr_info("[xfrm_state] ====[ xfrm refcnt backtrace begin x :%px ]===========\n", x);
-	for (idx = 0; idx < size; idx++) {
-		trace = &x->xfrm_refcount_trace[idx];
-		pid = trace->pid;
-		tmp = (pid & 0xf0000000) >> 28;
-		pr_info("[xfrm_state][%s][time %5lu.%06lu] [pid %d] [cpu %d] [refcount %d]\n",
-			tmp == 1 ? "xfrm_put" :	"xfrm_hold",
-			trace->when_sec, trace->when_nsec / 1000,
-			(trace->pid & 0xfffffff), trace->cpu, trace->count);
-		for (i = 0; i < XFRM_TRACK_ADDRS_COUNT; i++) {
-			if (trace->addrs[i] != 0)
-				pr_info("[xfrm_state][%d][<%p>] %pS\n", trace->count,
-					(void *)trace->addrs[i], (void *)trace->addrs[i]);
-		}
-	}
-	pr_info("[xfrm_state]====[ xfrm refcnt backtrace end x :%px ]===========\n", x);
-#endif
-}
-
 static  void
 xfrm_state_check_add_byspi_hlish(struct hlist_head *head, struct xfrm_state *new, char *func_name)
 {
