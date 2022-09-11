@@ -384,9 +384,7 @@ static struct attribute_group wl2866d_attribute_group = {
 static int wl2866d_get_id(struct  wl2866d_chip *chip)
 {
 	unsigned char reg_val = 0;
-	unsigned int reg_val1 = 0; 
 	int ret = 0;
-	struct regmap *regmap;
 
 	wl2866d_i2c_read(chip->regmap, wl2866d_on_config[OUT_DVDD1].reg, &reg_val, 1);
 	pr_err("%s:wl2866d id is %d\n", __func__, reg_val);
@@ -437,7 +435,6 @@ void wl2866d_print_reg(struct  wl2866d_chip *chip)
 static int wl2866d_init(struct  wl2866d_chip *chip)
 {
 	int ret = 0;
-	u8 val =0, val1 = 0x4B;
 
 	chip->en_gpio = of_get_named_gpio(chip->dev->of_node,
 			 "en-gpio", 0);
@@ -841,9 +838,6 @@ static int wl2866d_probe(struct i2c_client *client,
 	return 0;
 err_sysfs:
 init_err:
-vreg_init_err:
-	devm_kfree(chip->dev, chip);
-	chip = NULL;
 err_mem:
 	return ret;
 }
