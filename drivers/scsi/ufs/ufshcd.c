@@ -3846,7 +3846,7 @@ static int ufshcd_read_string_desc(struct ufs_hba *hba, int desc_index,
 	}
 out:
 	if (str) {
-		memset(buf,0,sizeof(buf));
+		memset(buf, 0, size);
 		memcpy(buf, str, ret);
 		kfree(str);
 	}
