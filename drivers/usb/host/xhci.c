@@ -1049,7 +1049,6 @@ int xhci_resume(struct xhci_hcd *xhci, bool hibernated)
 	struct usb_hcd		*secondary_hcd;
 	int			retval = 0;
 	bool			comp_timer_running = false;
-	bool			pending_portevent = false;
 	bool			reinit_xhc = false;
 
 	if (!hcd->state)
